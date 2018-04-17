@@ -1,0 +1,6 @@
+==========++++++++++==========
+./BatchHonkEJB/src/main/java/META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Class-Path: BatchHonkLogic.jar
+
+

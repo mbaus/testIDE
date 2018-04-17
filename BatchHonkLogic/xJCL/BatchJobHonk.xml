@@ -1,0 +1,60 @@
+==========++++++++++==========
+./BatchHonkLogic/xJCL/BatchJobHonk.xml
+<?xml version="1.0" encoding="ASCII"?>
+<job xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://core.wcg.etools.ibm.com/xsd/xJCL.xsd" name="BatchJobHonk" default-application-name="BatchHonk">
+  <job-type>Batch</job-type>
+  <jndi-name>ejb/BatchJobHonkBatchController</jndi-name>
+  <step-scheduling-criteria>
+    <scheduling-mode>sequential</scheduling-mode>
+  </step-scheduling-criteria>
+  <checkpoint-algorithm name="RecordBasedCheckpoint">
+    <classname>com.ibm.wsspi.batch.checkpointalgorithms.recordbased</classname>
+    <props>
+      <prop name="recordcount" value="1"/>
+      <prop name="TransactionTimeOut" value="10000"/>
+    </props>
+  </checkpoint-algorithm>
+  <results-algorithms>
+    <results-algorithm name="JobSumResult">
+      <classname>com.ibm.wsspi.batch.resultsalgorithms.jobsum</classname>
+    </results-algorithm>
+  </results-algorithms>
+  <job-step name="JobStepHonk">
+    <classname>com.ibm.websphere.batch.devframework.steps.technologyadapters.GenericXDBatchStep</classname>
+    <checkpoint-algorithm-ref name="RecordBasedCheckpoint"/>
+    <batch-data-streams>
+      <bds>
+        <logical-name>inputStream</logical-name>
+        <impl-class>com.ibm.websphere.batch.devframework.datastreams.patterns.TextFileReader</impl-class>
+        <props>
+          <prop name="PATTERN_IMPL_CLASS" value="de.honk.InputStreamImpl"/>
+          <prop name="FILENAME" value="c:\Temp\inputHonk.txt"/>
+          <prop name="file.encoding" value="UTF-8"/>
+          <prop name="EnablePerformanceMeasurement" value="false"/>
+          <prop name="AppendJobIdToFileName" value="false"/>
+          <prop name="EnableDetailedPerformanceMeasurement" value="false"/>
+          <prop name="debug" value="false"/>
+        </props>
+      </bds>
+      <bds>
+        <logical-name>outputStream</logical-name>
+        <impl-class>com.ibm.websphere.batch.devframework.datastreams.patterns.TextFileWriter</impl-class>
+        <props>
+          <prop name="PATTERN_IMPL_CLASS" value="de.honk.OutputStreamImpl"/>
+          <prop name="FILENAME" value="c:\temp\outputHonk.txt"/>
+          <prop name="EnableDetailedPerformanceMeasurement" value="false"/>
+          <prop name="AppendJobIdToFileName" value="true"/>
+          <prop name="debug" value="false"/>
+          <prop name="EnablePerformanceMeasurement" value="false"/>
+          <prop name="file.encoding" value="UTF-8"/>
+        </props>
+      </bds>
+    </batch-data-streams>
+    <props>
+      <prop name="BATCHRECORDPROCESSOR" value="de.honk.BatchProzessorHonk"/>
+      <prop name="debug" value="false"/>
+      <prop name="EnablePerformanceMeasurement" value="false"/>
+    </props>
+    <results-ref name="JobSumResult"/>
+  </job-step>
+</job>
